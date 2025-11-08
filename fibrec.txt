@@ -1,0 +1,24 @@
+import java.util.Scanner;
+
+public class FibonacciRecursive {
+
+    static int stepCount = 0;
+
+    static int fibonacci(int n) {
+        stepCount++; 
+        if (n <= 1)
+            return n;
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter n: ");
+        int n = sc.nextInt();
+        sc.close();
+
+        int result = fibonacci(n);
+        System.out.println("Fibonacci number at position " + n + " = " + result);
+        System.out.println("Step count = " + stepCount);
+    }
+}

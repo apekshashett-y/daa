@@ -1,0 +1,48 @@
+import pandas as pd
+
+
+df = pd.read_csv('sales_data_sample.csv', encoding='latin1')
+
+df.head()
+
+df.isnull().sum()
+
+df = df.dropna(axis=1)
+
+df.isnull().sum()
+
+X = df[['SALES', 'QUANTITYORDERED', 'PRICEEACH', 'MSRP']]
+X.head()
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+wcss = []
+for k in range(1, 11):
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(X_scaled)
+    wcss.append(kmeans.inertia_)
+
+
+plt.figure(figsize=(8,5))
+plt.plot(range(1, 11), wcss, marker='o')
+plt.title('Elbow Method for Optimal k')
+plt.xlabel('Number of Clusters (k)')
+plt.ylabel('WCSS')
+plt.show()
+
+kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans.fit(X_scaled)
+df['Cluster'] = kmeans.labels_
+
+print(df['Cluster'].value_counts())
+
+
+cluster_summary = df.groupby('Cluster')[['SALES', 'QUANTITYORDERED', 'PRICEEACH', 'MSRP']].mean()
+print(cluster_summary)
+
+

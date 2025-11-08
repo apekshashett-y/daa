@@ -1,0 +1,43 @@
+import pandas as pd
+
+df=pd.read_csv('emails.csv')
+
+df.head()
+
+df.isnull().sum()
+
+df.info()
+
+df.columns
+
+X = df.drop(columns=['Email No.', 'Prediction'])  
+y = df['Prediction']  
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+y_pred_knn = knn.predict(X_test)
+
+svm = SVC(kernel='linear')
+svm.fit(X_train, y_train)
+y_pred_svm = svm.predict(X_test)
+
+def evaluate_model(y_test, y_pred, model_name):
+    print(f"=== {model_name} ===")
+    print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+    print("Accuracy:", accuracy_score(y_test, y_pred))
+    print("Precision:", precision_score(y_test, y_pred))
+    print("Recall:", recall_score(y_test, y_pred))
+    
+evaluate_model(y_test, y_pred_knn, "K-Nearest Neighbors")
+evaluate_model(y_test, y_pred_svm, "Support Vector Machine")
+
